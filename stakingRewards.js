@@ -4,7 +4,8 @@ const { types2700: types } = require('@kiltprotocol/type-definitions');
 require('dotenv').config();
 
 // Initialise the provider to connect to the local node
-const provider = process.env.WS_ADDRESS || new WsProvider('wss://spiritnet.kilt.io');
+const address = process.env.WS_ADDRESS || 'wss://spiritnet.kilt.io';
+const provider = new WsProvider(address);
 const REWARD_TARGET = process.env.KILT_ADDRESS || '4tDe3xTK2opiuzSBtok6c9nvuNcugp4Qat4E1dK7gPanZWVg';
 const START_BLOCK = process.env.START_BLOCK || 132305;
 const END_BLOCK = process.env.END_BLOCK || 132350;
