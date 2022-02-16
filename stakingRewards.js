@@ -31,17 +31,17 @@ async function traverseBlocks(api, start, end) {
 
     while (block < end) {
         const blockHash = await api.rpc.chain.getBlockHash(block);
-        console.log(`Checking block ${block} with hash ${blockHash}.`)
+        // console.log(`Checking block ${block} with hash ${blockHash}.`)
 
         // filter events for parachainStarking.Rewarded and append to reward data
         const events = await api.query.system.events.at(blockHash);
         rewards = events.reduce((blockRewards, { event }) => {
             const { account, amount } = extractRewardData(event);
             if (account == REWARD_TARGET) {
-                console.log(`\t ${REWARD_TARGET} received ${amount} KILT.`);
+                // console.log(`\t ${REWARD_TARGET} received ${amount} KILT.`);
 
                 total += amount;
-                console.log(`\t Total rewards since start (#${start}): ${total} KILT.`)
+                // console.log(`\t Total rewards since start (#${start}): ${total} KILT.`)
 
                 return [...blockRewards, { blockNumber: block, blockHash: blockHash.toString(), amount }];
             }
@@ -53,12 +53,28 @@ async function traverseBlocks(api, start, end) {
     }
 
     // log rewards as table
-    console.table(rewards)
-
+//    console.table(rewards)
+   console.log(CSV(rewards));
     // log total collected rewards
     console.log(`Total rewards: ${total}`);
 }
 
+// Returns a csv from an array of objects with
+// values separated by tabs and rows separated by newlines
+function CSV(array) {
+    // Use first element to choose the keys and the order
+    var keys = Object.keys(array[0]);
+
+    // Build header
+    var result = keys.join(",") + "\n";
+
+    // Add the rows
+    array.forEach(function(obj){
+        result += keys.map(k => obj[k]).join(",") + "\n";
+    });
+
+    return result;
+}
 // Execute script
 async function main() {
     // Create our API with a default connection to the local node
